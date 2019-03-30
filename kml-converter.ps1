@@ -86,15 +86,15 @@ $kml.kml.Folder.Folder | ForEach-Object {
     Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name SECOND -Value $lastSeen.Second
 
     # Export the $compositeSSID object to csv file and append
-    $compositeSSID | Export-Csv -Path ( $outputPath + "_SSID.csv" ) -Append
+    $compositeSSID | Export-Csv -Path ( $outputPath + "_SSID.csv" ) -Append -NoTypeInformation
 
-    # Exort the $conpositeDetails object to a csv file and append
-    $compositeDetails | Export-Csv -Path ( $outputPath + "_DETAILS.csv" ) -Append
+    # Export the $conpositeDetails object to a csv file and append
+    $compositeDetails | Export-Csv -Path ( $outputPath + "_DETAILS.csv" ) -Append -NoTypeInformation
 
-    # Exort the $conpositeDetails object to a csv file and append
-    $compositeFirstDate | Export-Csv -Path ( $outputPath + "_FIRST-DATE.csv" ) -Append 
+    # Export the $conpositeDetails object to a csv file and append
+    $compositeFirstDate | Export-Csv -Path ( $outputPath + "_FIRST_DATE.csv" ) -Append -NoTypeInformation
 
-    # Exort the $conpositeDetails object to a csv file and append
-    $compositeLastDate | Export-Csv -Path ( $outputPath + "_LAST-DATE.csv" ) -Append 
+    # Export the $conpositeDetails object to a csv file and append
+    $compositeLastDate | Export-Csv -Path ( $outputPath + "_LAST_DATE.csv" ) -Append -NoTypeInformation
 
 }
