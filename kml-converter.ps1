@@ -48,42 +48,42 @@ $kml.kml.Folder.Folder | ForEach-Object {
     $compositeSSID = New-Object Object
  
     # Add properties and values to the newly created  SSID object
-    Add-Member -InputObject $compositeSSID -MemberType NoteProperty -Name Name -Value $_.name
-    Add-Member -InputObject $compositeSSID -MemberType NoteProperty -Name Latitude -Value $_.lookat.latitude
-    Add-Member -InputObject $compositeSSID -MemberType NoteProperty -Name Longitude -Value $_.lookat.longitude
+    Add-Member -InputObject $compositeSSID -MemberType NoteProperty -Name NAME -Value $_.name
+    Add-Member -InputObject $compositeSSID -MemberType NoteProperty -Name LATITUDE -Value $_.lookat.latitude
+    Add-Member -InputObject $compositeSSID -MemberType NoteProperty -Name LONGITUDE -Value $_.lookat.longitude
     
     # Create a new object for the details associated with the SSID values for this row.
     $compositeDetails = New-Object Object 
 
     Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name BSSID -Value $bssid
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name Manufacturer -Value $manufacturer 
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name Channel -Value $channel
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name Frequency -Value $frequency
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name Encryption -Value $encryption
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name Minimum-Signal -Value $minimumSignal
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name Maximum-signal -Value $maximumSignal
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MANUFACTURER -Value $manufacturer 
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name CHANNEL -Value $channel
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name FREQUENCY -Value $frequency
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name ENCRYPTION -Value $encryption
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MINIMUM_SIGNAL -Value $minimumSignal
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MAXIMUM_SIGNAL -Value $maximumSignal
 
     # Create a new object for the first-seen date values
     $compositeFirstdate = New-Object Object 
 
-    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name "First Seen" -Value $firstSeen.date
-    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name "Day" -Value $firstSeen.Day
-    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name "Day Of Week" -Value $firstSeen.DayOfWeek
-    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name "Day Of Year" -Value $firstSeen.DayOfYear
-    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name "Hour" -Value $firstSeen.Hour
-    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name "Minute" -Value $firstSeen.Minute
-    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name "Second" -Value $firstSeen.Second
+    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name FIRST_SEEN -Value $firstSeen.date
+    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name DAY -Value $firstSeen.Day
+    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name DAY_OF_WEEK -Value $firstSeen.DayOfWeek
+    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name DAY_OF_YEAR -Value $firstSeen.DayOfYear
+    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name HOUR -Value $firstSeen.Hour
+    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name MINUTE -Value $firstSeen.Minute
+    Add-Member -InputObject $compositeFirstDate -MemberType NoteProperty -Name SECOND -Value $firstSeen.Second
 
     # Create a new object for the last-seen date vales
     $compositeLastDate = New-Object Object
 
-    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name "Last Seen" -Value $lastSeen.date
-    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name "Day" -Value $lastSeen.Day
-    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name "Day Of Week" -Value $lastSeen.DayOfWeek
-    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name "Day Of Year" -Value $lastSeen.DayOfYear
-    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name "Hour" -Value $lastSeen.Hour
-    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name "Minute" -Value $lastSeen.Minute
-    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name "Second" -Value $lastSeen.Second
+    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name LAST_SEEN -Value $lastSeen.date
+    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name DAY -Value $lastSeen.Day
+    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name DAY_OF_WEEK -Value $lastSeen.DayOfWeek
+    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name DAY_OF_YEAR -Value $lastSeen.DayOfYear
+    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name HOUR -Value $lastSeen.Hour
+    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name MINUTE -Value $lastSeen.Minute
+    Add-Member -InputObject $compositeLastDate -MemberType NoteProperty -Name SECOND -Value $lastSeen.Second
 
     # Export the $compositeSSID object to csv file and append
     $compositeSSID | Export-Csv -Path ( $outputPath + "_SSID.csv" ) -Append
