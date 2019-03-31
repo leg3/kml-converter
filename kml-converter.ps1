@@ -76,13 +76,33 @@ $kml.kml.Folder.Folder | ForEach-Object {
     # Create a new object for the first-seen date values
     $compositeFirstSeen = New-Object Object 
 
-    Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name FIRST_SEEN -Value $firstSeen.date.tostring("yyy-MM-dd") 
-    Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY -Value $firstSeen.Day
-    Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_WEEK -Value $firstSeen.DayOfWeek
-    Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_YEAR -Value $firstSeen.DayOfYear
-    Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name HOUR -Value $firstSeen.Hour
-    Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name MINUTE -Value $firstSeen.Minute
-    Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name SECOND -Value $firstSeen.Second
+   if ($NULL -eq $firstSeen ) {
+      
+      $firstSeen = Get-Date
+      
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name FIRST_SEEN -Value $firstSeen.date.tostring("yyy-MM-dd")
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY -Value $firstSeen.Day
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_WEEK -Value $firstSeen.DayOfWeek
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_YEAR -Value $firstSeen.DayOfYear
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name HOUR -Value $firstSeen.Hour
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name MINUTE -Value $firstSeen.Minute
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name SECOND -Value $firstSeen.Second
+   
+   } 
+   
+   else 
+   
+   { 
+      
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name FIRST_SEEN -Value $firstSeen.date.tostring("yyy-MM-dd")
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY -Value $firstSeen.Day
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_WEEK -Value $firstSeen.DayOfWeek
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_YEAR -Value $firstSeen.DayOfYear
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name HOUR -Value $firstSeen.Hour
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name MINUTE -Value $firstSeen.Minute
+      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name SECOND -Value $firstSeen.Second
+
+   }
 
     # Create a new object for the last-seen date vales
     $compositeLastSeen = New-Object Object
@@ -96,16 +116,16 @@ $kml.kml.Folder.Folder | ForEach-Object {
     Add-Member -InputObject $compositeLastSeen -MemberType NoteProperty -Name SECOND -Value $lastSeen.Second
 
     # Export the $compositeSSID object to csv file and append
-    $compositeSSID | Export-Csv -Path ( $outputPath + "_SSID.csv" ) -Append -NoTypeInformation -Force
+    $compositeSSID | Export-Csv -Path ( $outputPath.replace(".kml","") + "_SSID.csv" ) -Append -NoTypeInformation 
 
     # Export the $conpositeDetails object to a csv file and append
-    $compositeDetails | Export-Csv -Path ( $outputPath + "_DETAILS.csv" ) -Append -NoTypeInformation -Force
+    $compositeDetails | Export-Csv -Path ( $outputPath.replace(".kml","") + "_DETAILS.csv" ) -Append -NoTypeInformation 
 
     # Export the $conpositeDetails object to a csv file and append
-    $compositeFirstSeen | Export-Csv -Path ( $outputPath + "_FIRST_SEEN.csv" ) -Append -NoTypeInformation -Force
+    $compositeFirstSeen | Export-Csv -Path ( $outputPath.replace(".kml","") + "_FIRST_SEEN.csv" ) -Append -NoTypeInformation 
 
     # Export the $conpositeDetails object to a csv file and append
-    $compositeLastSeen | Export-Csv -Path ( $outputPath + "_LAST_SEEN.csv" ) -Append -NoTypeInformation -Force
+    $compositeLastSeen | Export-Csv -Path ( $outputPath.replace(".kml","") + "_LAST_SEEN.csv" ) -Append -NoTypeInformation 
 
 }
 
@@ -114,18 +134,26 @@ $kml.kml.Folder.Folder | ForEach-Object {
 
 Get-ChildItem -Path ${psscriptroot} -Name -Filter "*.kml" | ForEach-Object { 
    
+   $name = $_.replace(".kml", "")
+   mkdir $name
+   $destination = Get-ChildItem -Path ./ -Directory $name
    Write-Host ( "Processing " + $_ + "`n" )
    sqlPreParse ($_); 
    Write-Host ( $_ + " Processed...`n" )
 
+   Get-ChildItem -Path ${psscriptroot} -Name -Filter "*.csv" | ForEach-Object {
+   
+      Move-Item -path .\*.csv -Destination  $destination
+      
+      }
+
 }
 
-Get-ChildItem -Path ${psscriptroot} -Name -Filter "*.csv" | ForEach-Object {
+Get-ChildItem -Path ${psscriptroot} -Recurse -Name -Filter "*.csv" | ForEach-Object {
 
-Write-Host $_   
-Import-Csv $_ | Measure-Object
+$_ | Out-File log.txt -Append  
+Import-Csv $_ | Measure-Object | Out-File log.txt -Append
 
 }
-
 [System.Media.SystemSounds]::Beep.Play()
 Read-Host -Prompt "Enter to exit"
