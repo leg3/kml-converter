@@ -27,25 +27,26 @@ $private:outputPath = $file
 
 $kml.kml.Folder.Folder | ForEach-Object { 
 
-    # Select the inner text and cast it into a varitable
-    $nodeValue = $_.InnerText -replace "<br>" , "" -replace "</br>" , "" -replace "<hr>" , "" -replace "</hr>" , "" -replace "<b>" , "" -replace "</b>" , "" -replace "  " , "" -replace " " , "_" -replace " " , "" -replace "First-seen:" , " " -replace "Last-seen:" , " " -replace "BSSID:" , " " -replace "Manufacturer:" , " " -replace "Channel:" , " " -replace "Frequency:" , " " -replace "Mhz" , "" -replace "Encryption:" , " " -replace "Min-Signal:" , " " -replace "dBm" , "" -replace "Max-Signal:" , " " -replace "GPS" , " " -replace "Avg lat/lon: " , " " -replace "Captured Packets" , " " -replace "LLC" , " " -replace "data" , " " -replace "crypt:" , " " -replace "total" , " " -replace "fragments" , " fragments" -replace "retries:" , " " -replace "node" , " " -replace "clampedToGround00" , " " -replace "`n" , "" -replace "`r" , ""
+    # Select the inner text and cast it into a variable
+    $nodeValue = $_.InnerText -replace "<br>" , "" -replace "</br>" , "" -replace "<hr>" , "" -replace "</hr>" , "" -replace "<b>" , "" -replace "</b>" , "" -replace "  " , "" -replace " " , "__" -replace " " , "" -replace "First-seen:" , " " -replace "Last-seen:" , " " -replace "BSSID:" , " " -replace "Manufacturer:" , " " -replace "Channel:" , " " -replace "Frequency:" , " " -replace "Mhz" , "" -replace "Encryption:" , " " -replace "Min-Signal:" , " " -replace "dBm" , "" -replace "Max-Signal:" , " " -replace "GPS" , " " -replace "Avg lat/lon: " , " " -replace "Captured Packets" , " " -replace "LLC:" , " " -replace "data:" , " " -replace "crypt:" , " " -replace "total:" , " " -replace "fragments:" , " fragments:" -replace "retries:" , " " -replace "node_wpa.png" , " " -replace "clampedToGround00" , " " -replace "`n" , "" -replace "`r" , ""
 
     # Split this string into a multi line string array using the "space" as a delimiter
     $nodeValueArray = @($nodeValue.Split(" "))
 
     # Mangle each object in the array to remove any remaining spaces and convert previously inserted underscores back to spaces
-    $nodeValueArray = $nodeValueArray -replace " " , "" -replace "_" , " "
+    $nodeValueArray = $nodeValueArray -replace " " , "" -replace "__" , " "
 
     # Load the array object into variables
-    $firstSeenText = $nodeValueArray[1] | Select-Object
-    $lastSeenText = $nodeValueArray[2] | Select-Object
-    $bssid = $nodeValueArray[3] | Select-Object
-    $manufacturer = $nodeValueArray[4] | Select-Object
-    $channel = $nodeValueArray[5] | Select-Object
-    $frequency = $nodeValueArray[6] | Select-Object
-    $encryption = $nodeValueArray[7] | Select-Object
-    $minimumSignal = $nodeValueArray[8] | Select-Object
-    $maximumSignal = $nodeValueArray[9] | Select-Object
+    #$debug = $nodeValueArray[0].trim()
+    $firstSeenText = $nodeValueArray[1].trim()
+    $lastSeenText = $nodeValueArray[2].trim()
+    $bssid = $nodeValueArray[3].trim() 
+    $manufacturer = $nodeValueArray[4].trim() 
+    $channel = $nodeValueArray[5].trim() 
+    $frequency = $nodeValueArray[6].trim() 
+    $encryption = $nodeValueArray[7].trim() 
+    $minimumSignal = $nodeValueArray[8].trim() 
+    $maximumSignal = $nodeValueArray[9].trim() 
 
     # Convert the date strings into a date time object
     $firstSeen = convertDateToString -Date $firstSeenText -Format 'ddd MMM dd HH:mm:ss yyyy'
@@ -65,48 +66,33 @@ $kml.kml.Folder.Folder | ForEach-Object {
     # Create a new object for the details associated with the SSID values for this row.
     $compositeDetails = New-Object Object 
 
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name BSSID -Value $bssid.trim()
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MANUFACTURER -Value $manufacturer.trim();
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name CHANNEL -Value $channel.trim()
+    #Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name DEBUG -Value $debug
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name BSSID -Value $bssid
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MANUFACTURER -Value $manufacturer
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name CHANNEL -Value $channel
     Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name FREQUENCY -Value $frequency.trim()
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name ENCRYPTION -Value $encryption.trim()
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MINIMUM_SIGNAL -Value $minimumSignal.trim()
-    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MAXIMUM_SIGNAL -Value $maximumSignal.trim()
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name ENCRYPTION $encryption.trim()
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MINIMUM_SIGNAL -Value $minimumSignal
+    Add-Member -InputObject $compositeDetails -MemberType NoteProperty -Name MAXIMUM_SIGNAL -Value $maximumSignal
 
     # Create a new object for the first-seen date values
     $compositeFirstSeen = New-Object Object 
 
-   if ($NULL -eq $firstSeen ) {
-      
-      $firstSeen = Get-Date
-      
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name FIRST_SEEN -Value $firstSeen.date.tostring("yyy-MM-dd")
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY -Value $firstSeen.Day
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_WEEK -Value $firstSeen.DayOfWeek
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_YEAR -Value $firstSeen.DayOfYear
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name HOUR -Value $firstSeen.Hour
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name MINUTE -Value $firstSeen.Minute
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name SECOND -Value $firstSeen.Second
+   if ($NULL -eq $firstSeen ) { $firstSeen = Get-Date } 
    
-   } 
-   
-   else 
-   
-   { 
-      
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name FIRST_SEEN -Value $firstSeen.date.tostring("yyy-MM-dd")
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY -Value $firstSeen.Day
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_WEEK -Value $firstSeen.DayOfWeek
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_YEAR -Value $firstSeen.DayOfYear
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name HOUR -Value $firstSeen.Hour
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name MINUTE -Value $firstSeen.Minute
-      Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name SECOND -Value $firstSeen.Second
+   Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name FIRST_SEEN -Value $firstSeen.date.tostring("yyy-MM-dd")
+   Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY -Value $firstSeen.Day
+   Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_WEEK -Value $firstSeen.DayOfWeek
+   Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name DAY_OF_YEAR -Value $firstSeen.DayOfYear
+   Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name HOUR -Value $firstSeen.Hour
+   Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name MINUTE -Value $firstSeen.Minute
+   Add-Member -InputObject $compositeFirstSeen -MemberType NoteProperty -Name SECOND -Value $firstSeen.Second
 
-   }
-
-    # Create a new object for the last-seen date vales
+    # Create a new object for the last-seen date values
     $compositeLastSeen = New-Object Object
 
+    if ($NULL -eq $lastSeen ) { $lastSeen = Get-Date} 
+    
     Add-Member -InputObject $compositeLastSeen -MemberType NoteProperty -Name LAST_SEEN -Value $lastSeen.date.tostring("yyy-MM-dd")
     Add-Member -InputObject $compositeLastSeen -MemberType NoteProperty -Name DAY -Value $lastSeen.Day
     Add-Member -InputObject $compositeLastSeen -MemberType NoteProperty -Name DAY_OF_WEEK -Value $lastSeen.DayOfWeek
@@ -155,5 +141,6 @@ $_ | Out-File log.txt -Append
 Import-Csv $_ | Measure-Object | Out-File log.txt -Append
 
 }
+
+# Sound off to indicate work is done
 [System.Media.SystemSounds]::Beep.Play()
-Read-Host -Prompt "Enter to exit"
