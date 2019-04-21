@@ -12,7 +12,7 @@ Place the script in a directory where all of your .kml files are located.  The s
 
 ## Loggin'
 
-Run the script from the command line like so:
+This script will generate a log of the output counts to a text file named log.txt If you with to redirect all streams to the log file, run the script from the command line like so:
 
 ```PowerShell
 .\kml-converter.ps1 *> kenny.log
