@@ -8,7 +8,7 @@ I had used a pykismet script to convert a bunch of kismet files into .kml files.
 
 ## Usage
 
-Place the script in a directory where all of your .kml files are located.  The script will parse the directory for files, convert them, and move the output to a folder named after the .kml file
+Place the script in a directory where all of your .kml files are located.  The script will parse the directory for files, convert them, and move the output to a folder named after the .kml file.  Once this has been completed the script will the recursivley parse the folders that were created and concatenate the individual .csv files into a single .csv file for import into a MySQL database.
 
 ## Loggin'
 
