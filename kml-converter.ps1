@@ -37,7 +37,6 @@ $kml.kml.Folder.Folder | ForEach-Object {
     $nodeValueArray = $nodeValueArray -replace " " , "" -replace "__" , " "
 
     # Load the array object into variables
-    #$debug = $nodeValueArray[0].trim()
     $firstSeenText = $nodeValueArray[1].trim()
     $lastSeenText = $nodeValueArray[2].trim()
     $bssid = $nodeValueArray[3].trim() 
@@ -117,7 +116,7 @@ $kml.kml.Folder.Folder | ForEach-Object {
 
 }
 
-
+# Move the newly generated files into folders that are named after the individual .kml files
 Get-ChildItem -Path ${psscriptroot} -Name -Filter "*.kml" | ForEach-Object { 
    
    $name = $_.replace(".kml", "")
@@ -135,6 +134,7 @@ Get-ChildItem -Path ${psscriptroot} -Name -Filter "*.kml" | ForEach-Object {
 
 }
 
+# Log the count from our .csv files for reference
 Get-ChildItem -Path ${psscriptroot} -Recurse -Name -Filter "*.csv" | ForEach-Object {
 
 $_ | Out-File log.txt -Append  
@@ -142,5 +142,54 @@ Import-Csv $_ | Measure-Object | Out-File log.txt -Append
 
 }
 
-# Sound off to indicate work is done
-[System.Media.SystemSounds]::Beep.Play()
+# Concatenate the "DETAILS" .csv files 
+$getFirstLine = $true
+get-childItem -Path ${psscriptroot} -Recurse -Name -Filter "*DETAILS.csv" | ForEach-Object {
+$filePath = $_
+$lines = Get-Content $filePath  
+$linesToWrite = switch($getFirstLine) {
+$true  {$lines}
+$false {$lines | Select-Object -Skip 1}
+}
+$getFirstLine = $false
+Add-Content "${psscriptroot}\COMPOSITE_DETAILS.csv" $linesToWrite
+}
+
+# Concatenate the "FIRST_SEEN" .csv files 
+$getFirstLine = $true
+get-childItem -Path ${psscriptroot} -Recurse -Name -Filter "*FIRST_SEEN.csv" | ForEach-Object {
+$filePath = $_
+$lines = Get-Content $filePath  
+$linesToWrite = switch($getFirstLine) {
+$true  {$lines}
+$false {$lines | Select-Object -Skip 1}
+}
+$getFirstLine = $false
+Add-Content "${psscriptroot}\COMPOSITE_FIRST_SEEN.csv" $linesToWrite
+}
+
+# Concatenate the "LAST_SEEN" .csv files
+$getFirstLine = $true
+get-childItem -Path ${psscriptroot} -Recurse -Name -Filter "*LAST_SEEN.csv" | ForEach-Object {
+$filePath = $_
+$lines = Get-Content $filePath  
+$linesToWrite = switch($getFirstLine) {
+$true  {$lines}
+$false {$lines | Select-Object -Skip 1}
+}
+$getFirstLine = $false
+Add-Content "${psscriptroot}\COMPOSITE_LAST_SEEN.csv" $linesToWrite
+}
+
+# Concatenate the "SSID" .csv files
+$getFirstLine = $true
+get-childItem -Path ${psscriptroot} -Recurse -Name -Filter "*SSID.csv" | ForEach-Object {
+$filePath = $_             
+$lines = Get-Content $filePath  
+$linesToWrite = switch($getFirstLine) {
+$true  {$lines}
+$false {$lines | Select-Object -Skip 1}              
+}         
+$getFirstLine = $false
+Add-Content "${psscriptroot}\COMPOSITE_SSID.csv" $linesToWrite
+}
