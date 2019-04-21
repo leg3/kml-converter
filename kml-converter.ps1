@@ -193,3 +193,20 @@ Get-ChildItem -Path ${psscriptroot} -Recurse -Name -Filter "*SSID.csv" | ForEach
   $getFirstLine = $false
   Add-Content "${psscriptroot}\COMPOSITE_SSID.csv" $linesToWrite
 }
+
+# Move the composite output generated files into an output folder
+
+  $currentDate = get-date -Format FileDateTimeUniversal
+  $name = "COMPOSITE-$currentDate"
+  mkdir $name
+  $destination = Get-ChildItem -Path ./ -Directory $name
+
+  Get-ChildItem -Path ${psscriptroot} -Name -Filter "COMPOSITE*.csv" | ForEach-Object {
+
+    Move-Item -Path .\*.csv -Destination $destination
+
+  }
+
+# Move the logfile to the output folder
+
+Move-Item -Path .\log.txt -Destination $destination
